@@ -12,8 +12,9 @@ int main()
     EndTextureMode();
 
     Vector2   mousePosition;
-    bool      isDrawing  = false;
-    const int squareSize = 10; // Size of the square
+    bool      isDrawing         = false;
+    const int squareSize        = 10;
+    int       boundaryThickness = 10;
 
     SetTargetFPS(60);
 
@@ -30,6 +31,15 @@ int main()
             DrawRectangleV((Vector2){mousePosition.x - squareSize / 2, mousePosition.y - squareSize / 2},
                            (Vector2){squareSize, squareSize},
                            RED); // Draw square
+                                 // Boundary
+            DrawRectangle(0, 0, kScreenWidth, boundaryThickness, RED);
+            // Bottom border
+            DrawRectangle(0, kScreenHeight - boundaryThickness, kScreenWidth, boundaryThickness, RED);
+            // Left border
+            DrawRectangle(0, 0, boundaryThickness, kScreenHeight, RED);
+            // Right border
+            DrawRectangle(kScreenWidth - boundaryThickness, 0, boundaryThickness, kScreenHeight, RED);
+
             EndTextureMode();
         }
         else

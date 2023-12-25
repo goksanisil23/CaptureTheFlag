@@ -1,5 +1,45 @@
 # CaptureTheFlag
-- 2d world
+- Use base component and entity class
+```c++
+enum ComponentType {
+    POSITION,
+    VELOCITY,
+    HEALTH,
+    // ... other component types ...
+    COMPONENT_COUNT
+};
+class Entity {
+private:
+    std::array<std::unique_ptr<Component>, COMPONENT_COUNT> components;
+
+public:
+    template <typename T>
+    T* getComponent(ComponentType type) {
+        return static_cast<T*>(components[type].get());
+    }
+
+    template <typename T, typename... Args>
+    T* addComponent(ComponentType type, Args&&... args) {
+        T* component = new T(std::forward<Args>(args)...);
+        components[type] = std::unique_ptr<Component>(component);
+        return component;
+    }
+
+    void removeComponent(ComponentType type) {
+        components[type].reset();
+    }
+
+    // ... other entity-related methods ...
+};
+// ...
+   Entity entity;
+    entity.addComponent<PositionComponent>(POSITION, 10.0f, 20.0f);
+
+    PositionComponent* position = entity.getComponent<PositionComponent>(POSITION);
+    if (position) {
+        // Do something with the position component
+    }
+```
 - visibility cone of each player
 - can only shoot within subset reachability within the visibility cone
 - can make the environment grid like so that obstacles would be just a set of occupied cells for fast raycasting

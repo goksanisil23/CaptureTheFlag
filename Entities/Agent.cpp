@@ -1,13 +1,22 @@
 #include "Agent.h"
 
-Agent::Agent()
+Agent::Agent(const raylib::Vector2 start_pos, const raylib::Color color, const float radius)
 {
-    pos.position = raylib::Vector2{100, 100};
-    vis.color    = raylib::Color::Yellow();
+    tf.position = start_pos;
+    vis.color   = color;
+    vis.radius  = radius;
+
+    sensor.ray_angles.clear();
+    sensor.offset = vis.radius;
+    sensor.ray_angles.push_back(-70.F);
+    sensor.ray_angles.push_back(-30.F);
+    sensor.ray_angles.push_back(0.F);
+    sensor.ray_angles.push_back(30.F);
+    sensor.ray_angles.push_back(70.F);
 }
 
 void Agent::move()
 {
-    pos.position.x += 0.1;
-    pos.position.y += 0.2;
+    tf.position.x += (float)rand() / RAND_MAX;
+    tf.position.y += (float)rand() / RAND_MAX;
 }

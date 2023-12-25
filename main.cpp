@@ -13,11 +13,13 @@ int main(int argc, char **argv)
     auto render_sys = RenderSystem("../MapCreator/build/map_image.png");
 
     std::vector<Agent> agents;
-    agents.push_back(Agent());
+    agents.push_back(Agent({100, 100}, raylib::Color::Green(), 10.F));
+    agents.push_back(Agent({1000, 700}, raylib::Color::Green(), 10.F));
 
     while (true)
     {
         // -------- 1) Kinematics Update of Agents -------- //
+        // TODO: Decision making using the last updated sensor measurements here
         for (auto &agent : agents)
         {
             agent.move();
@@ -25,20 +27,19 @@ int main(int argc, char **argv)
 
         // -------- 2) Draw current state of actors and static entities -------- //
         render_sys.activateDrawing();
-        // Draw track title and other static entities
-        // DrawCircle(100, 100, 20, {255, 255, 255, 255});
+
+        // We want agents to see each other so we first draw them before sensor update
+        render_sys.drawAgentsDirect(agents);
 
         render_sys.disableDrawing();
 
         // -------- 3) Direct render buffer manipulation for sensors -------- //
-        // NOTE: Y-coordinate will be inverted
-        raylib::Image render_buffer;
-        render_buffer.Load(render_sys.render_target_.texture);
+        // Either inspect or do some changes to render buffer
+        render_sys.loadRenderBufferCPU();
+        // render_sys.drawAgents(agents);
 
-        render_sys.drawAgents(agents, render_buffer);
-
-        // // Do some changes to render buffer
-        UpdateTexture(render_sys.render_target_.texture, render_buffer.data);
+        render_sys.stepSensors(agents);
+        render_sys.drawSensors(agents);
 
         // Finalize the render
         render_sys.render();
